@@ -128,6 +128,10 @@ export default function ReviewsPage() {
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());
   const [userNotes, setUserNotes] = useState<Record<string, string>>({});
 
+  // ── Smart answer detection (wrong type hint) ───────────────
+  const [wrongTypeHint, setWrongTypeHint] = useState<string | null>(null);
+  const [shakeKey, setShakeKey] = useState(0);
+
   // ── Fetch review queue + user preferences ───────────────────
   useEffect(() => {
     Promise.all([
@@ -163,6 +167,7 @@ export default function ReviewsPage() {
     setRawRomaji("");
     setPersonalityMessage("");
     setOpenSections(new Set());
+    setWrongTypeHint(null);
 
     if (questionType === "meaning" && hasReadings && currentItem?.type !== "component") {
       setQuestionType("reading");
@@ -240,7 +245,6 @@ export default function ReviewsPage() {
   // ── Submit answer (instant local grading) ───────────────────
   async function submitAnswer() {
     if (!currentItem || submitting || !userInput.trim()) return;
-    setSubmitting(true);
 
     const responseTimeMs = Date.now() - startTime;
     const answer =
@@ -248,8 +252,40 @@ export default function ReviewsPage() {
         ? romajiToKanaFinal(rawRomaji || userInput)
         : userInput.trim();
 
-    // ── LOCAL grading (instant!) ────────────────────────────
+    // ── SMART DETECTION: Did they type the right answer for the WRONG question type? ──
     const userAnswer = answer.toLowerCase();
+
+    if (questionType === "meaning") {
+      // Asked for meaning, but they typed a reading?
+      const matchedReading = currentItem.readings.some(
+        (r) => r.reading === answer.trim() || r.reading === userAnswer
+      );
+      if (matchedReading) {
+        setWrongTypeHint("That's a reading for this item! We're looking for the English meaning.");
+        setShakeKey((prev) => prev + 1);
+        setUserInput("");
+        setRawRomaji("");
+        return;
+      }
+    } else {
+      // Asked for reading, but they typed a meaning?
+      const matchedMeaning = currentItem.meanings.some(
+        (m) => m.meaning.toLowerCase() === userAnswer
+      );
+      if (matchedMeaning) {
+        setWrongTypeHint("That's the English meaning! We're looking for the reading in kana.");
+        setShakeKey((prev) => prev + 1);
+        setUserInput("");
+        setRawRomaji("");
+        return;
+      }
+    }
+
+    // Clear any previous hint
+    setWrongTypeHint(null);
+    setSubmitting(true);
+
+    // ── LOCAL grading (instant!) ────────────────────────────
     let isCorrect = false;
     let correctAnswers: string[] = [];
 
@@ -614,10 +650,12 @@ export default function ReviewsPage() {
       {/* Input area */}
       <div className="space-y-3">
         <input
+          key={shakeKey}
           ref={inputRef}
           type="text"
           value={userInput}
           onChange={(e) => {
+            if (wrongTypeHint) setWrongTypeHint(null);
             if (isReadingQ) {
               handleReadingInput(e.target.value);
             } else {
@@ -636,6 +674,8 @@ export default function ReviewsPage() {
               ? result.isCorrect
                 ? "border-secondary bg-secondary/5"
                 : "border-destructive bg-destructive/5"
+              : wrongTypeHint
+              ? "border-accent bg-accent/10 animate-shake"
               : "border-border focus:border-primary bg-card"
           } disabled:opacity-70`}
           autoComplete="off"
@@ -643,6 +683,13 @@ export default function ReviewsPage() {
           spellCheck={false}
           lang={isReadingQ ? "ja" : "en"}
         />
+
+        {/* Wrong answer type hint */}
+        {wrongTypeHint && (
+          <p className="text-center text-sm font-medium text-accent-hover">
+            {wrongTypeHint}
+          </p>
+        )}
 
         {/* Result feedback with personality */}
         {result && (
