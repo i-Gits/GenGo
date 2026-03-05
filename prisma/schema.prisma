@@ -221,7 +221,7 @@ model UserPreference {
   userId            String @unique
   honorific         String @default("勇者")      // title/honorific
   preferredName     String @default("")           // display name
-  encouragementMode String @default("playful")    // "playful"|"teacher"|"tsundere"|"yandere"|"boring"|"bipolar"|"crazyhana"
+  encouragementMode String @default("playful")    // "playful"|"teacher"|"tsundere"|"yandere"|"boring"|"wildcard"|"crazyhana"
   theme             String @default("light")      // "light" | "dark"
   lessonBatchSize   Int    @default(5)            // 5, 10, or custom
   dailyReviewLimit  Int    @default(100)          // max reviews/day (0 = unlimited)

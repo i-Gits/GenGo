@@ -30,7 +30,7 @@ import type { EncouragementMode } from "@/engine/types";
 // Valid encouragement modes (from types.ts)
 const VALID_MODES: EncouragementMode[] = [
   "playful", "teacher", "tsundere", "yandere",
-  "boring", "bipolar", "crazyhana",
+  "boring", "wildcard", "crazyhana",
 ];
 
 // ═══════════════════════════════════════════════════════════════

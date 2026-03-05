@@ -12,7 +12,7 @@ GenGo! teaches kanji, vocabulary, and readings through a structured 100-level pr
 
 - **SRS Engine** — Custom spaced repetition with 10-stage flower lifecycle (Seed → Sprout → Bloom → Eternal)
 - **Level System** — 100 levels with dependency-based unlocking (components → characters → vocabulary)
-- **Personality Modes** — 7 companion personalities that change all feedback text (Playful, Teacher, Tsundere, Yandere, Boring, Bipolar, CrazyHana)
+- **Personality Modes** — 7 companion personalities that change all feedback text (Playful, Teacher, Tsundere, Yandere, Boring, Wildcard, CrazyHana)
 - **Silent Kana Input** — Type romaji, see kana instantly. Romaji is never displayed
 - **Flower Garden Dashboard** — Your progress is a garden. Each kanji is a flower. You're the gardener
 - **Dark/Light Mode** — Deep midnight or soft blush pink

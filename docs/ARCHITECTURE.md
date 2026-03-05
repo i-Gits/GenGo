@@ -381,7 +381,7 @@ model UserPreference {
   userId            String @unique
   honorific         String @default("勇者")    // 王女, 王子, 王, 女王, 勇者, 魔王, 旅人, 博士, 先生, or custom
   preferredName     String @default("")        // display name
-  encouragementMode String @default("playful") // "playful" | "teacher" | "tsundere" | "yandere" | "boring" | "bipolar" | "crazyhana"
+  encouragementMode String @default("playful") // "playful" | "teacher" | "tsundere" | "yandere" | "boring" | "wildcard" | "crazyhana"
   theme             String @default("light")   // "light" | "dark"
   lessonBatchSize   Int    @default(5)         // 5, 10, or custom number
   dailyReviewLimit  Int    @default(100)       // max reviews per day (0 = unlimited)

@@ -33,7 +33,7 @@ const MODES = [
   { value: "tsundere",  label: "Tsundere",             desc: "It's not like I want you to learn..." },
   { value: "yandere",   label: "Yandere",              desc: "I'll never let you forget~" },
   { value: "boring",    label: "Boring & Straight",    desc: "Just the facts." },
-  { value: "bipolar",   label: "Bipolar",              desc: "Wildly switches between modes" },
+  { value: "wildcard",  label: "Wildcard",              desc: "Wildly switches between modes" },
   { value: "crazyhana", label: "CrazyHana",             desc: "WABBY WABBO?!" },
 ];
 
@@ -216,7 +216,7 @@ export default function DashboardPage() {
             {selectedMode === "tsundere" && "😤"}
             {selectedMode === "yandere" && "🔪"}
             {selectedMode === "boring" && "📋"}
-            {selectedMode === "bipolar" && "🎭"}
+            {selectedMode === "wildcard" && "🃏"}
             {selectedMode === "crazyhana" && "🤪"}
           </span>
           <span className="text-[9px] font-bold mt-0.5" style={{ color: "var(--primary-hover)" }}>

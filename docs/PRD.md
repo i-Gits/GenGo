@@ -358,7 +358,7 @@ the app. Can be changed anytime in settings.
 | 😤 Tsundere          | "H-hmph. Fine, you got it. ...good." | "バカ！ That's wrong! ...try again."            |
 | 🔪 Yandere           | "Yes~ perfect~ just for me~"         | "Wrong... you're not leaving until it's right~ 🔪" |
 | 📋 Boring & Straight | "Correct."                           | "Incorrect. The answer was X."                  |
-| 🎭 Bipolar           | "AMAZING!! THE BEST ANSWER EVER!!"   | "oh. oh no. oh no no no. i cant do this."       |
+| 🃏 Wildcard           | *(randomly picks from other modes)*  | *(randomly picks from other modes)*             |
 | 🤪 CrazyHana         | "WABBY WABBO!! That answer was so good my SUNFLOWERS started SINGING!" | "The zombies ATE your answer!! It's okay I have a SPARE one somewhere in my TRUNK." |
 
 > 🌮 **CrazyHana** is GenGo!'s chaotic garden spirit -- an unhinged flower

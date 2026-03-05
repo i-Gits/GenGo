@@ -30,7 +30,7 @@ const MODES = [
   { value: "tsundere",  label: "Tsundere",             emoji: "😤", desc: "It's not like I want you to learn..." },
   { value: "yandere",   label: "Yandere",              emoji: "🔪", desc: "I'll never let you forget~" },
   { value: "boring",    label: "Boring & Straight",    emoji: "📋", desc: "Just the facts." },
-  { value: "bipolar",   label: "Bipolar",              emoji: "🎭", desc: "Wildly switches between modes" },
+  { value: "wildcard",  label: "Wildcard",              emoji: "🃏", desc: "Wildly switches between modes" },
   { value: "crazyhana", label: "CrazyHana",             emoji: "🤪", desc: "WABBY WABBO?!" },
 ];
 

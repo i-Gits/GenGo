@@ -61,7 +61,7 @@ const CORRECT: Record<EncouragementMode, string[]> = {
     "Affirmative.",
     "Yes.",
   ],
-  bipolar: [], // handled dynamically
+  wildcard: [], // handled dynamically
   crazyhana: [
     "WABBY WABBO!! CORRECT!!",
     "YEEEAAAH BABY!!",
@@ -112,7 +112,7 @@ const INCORRECT: Record<EncouragementMode, string[]> = {
     "Negative.",
     "No.",
   ],
-  bipolar: [], // handled dynamically
+  wildcard: [], // handled dynamically
   crazyhana: [
     "WRONG BUT WHO CARES!! TACOS!!",
     "NOPE! BUT THE ZOMBIES DON'T CARE!!",
@@ -150,7 +150,7 @@ const SESSION_COMPLETE: Record<EncouragementMode, string[]> = {
     "Review session finished.",
     "Done.",
   ],
-  bipolar: [],
+  wildcard: [],
   crazyhana: [
     "SESSION OVER!! TIME FOR TACOS!!",
     "WABBY WABBO!! THAT WAS GREAT!!",
@@ -161,24 +161,24 @@ const SESSION_COMPLETE: Record<EncouragementMode, string[]> = {
 // ── Public API ─────────────────────────────────────────────────
 
 export function getCorrectMessage(mode: EncouragementMode): string {
-  if (mode === "bipolar") {
-    const modes = Object.keys(CORRECT).filter((m) => m !== "bipolar") as EncouragementMode[];
+  if (mode === "wildcard") {
+    const modes = Object.keys(CORRECT).filter((m) => m !== "wildcard") as EncouragementMode[];
     return pick(CORRECT[pick(modes)]);
   }
   return pick(CORRECT[mode] ?? CORRECT.playful);
 }
 
 export function getIncorrectMessage(mode: EncouragementMode): string {
-  if (mode === "bipolar") {
-    const modes = Object.keys(INCORRECT).filter((m) => m !== "bipolar") as EncouragementMode[];
+  if (mode === "wildcard") {
+    const modes = Object.keys(INCORRECT).filter((m) => m !== "wildcard") as EncouragementMode[];
     return pick(INCORRECT[pick(modes)]);
   }
   return pick(INCORRECT[mode] ?? INCORRECT.playful);
 }
 
 export function getSessionCompleteMessage(mode: EncouragementMode): string {
-  if (mode === "bipolar") {
-    const modes = Object.keys(SESSION_COMPLETE).filter((m) => m !== "bipolar") as EncouragementMode[];
+  if (mode === "wildcard") {
+    const modes = Object.keys(SESSION_COMPLETE).filter((m) => m !== "wildcard") as EncouragementMode[];
     return pick(SESSION_COMPLETE[pick(modes)]);
   }
   return pick(SESSION_COMPLETE[mode] ?? SESSION_COMPLETE.playful);
