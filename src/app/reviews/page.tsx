@@ -525,7 +525,7 @@ export default function ReviewsPage() {
           onClick={() => {
             const modes: EncouragementMode[] = [
               "playful", "teacher", "tsundere", "yandere",
-              "boring", "bipolar", "crazydave",
+              "boring", "bipolar", "crazyhana",
             ];
             const idx = modes.indexOf(encouragementMode);
             const next = modes[(idx + 1) % modes.length];
@@ -546,7 +546,7 @@ export default function ReviewsPage() {
           {encouragementMode === "yandere" && "🔪 Yandere"}
           {encouragementMode === "boring" && "📋 Boring"}
           {encouragementMode === "bipolar" && "🎭 Bipolar"}
-          {encouragementMode === "crazydave" && "🤪 CrazyDave"}
+          {encouragementMode === "crazyhana" && "🤪 CrazyHana"}
         </button>
       </div>
 

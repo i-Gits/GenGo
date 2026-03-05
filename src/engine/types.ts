@@ -96,7 +96,7 @@ export type EncouragementMode =
   | "yandere"      // 🔪 Yandere
   | "boring"       // 📋 Boring & Straight
   | "bipolar"      // 🎭 Bipolar
-  | "crazydave";   // 🤪 CrazyDave
+  | "crazyhana";   // 🤪 CrazyHana
 
 // ── Flower health state (for the wilting mechanic) ──────────
 export type FlowerHealth = "thriving" | "healthy" | "wilting" | "dry" | "watered";

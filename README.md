@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GenGo! 言語! 🌸
 
-## Getting Started
+A level-based spaced repetition language learning app, starting with Japanese.
 
-First, run the development server:
+GenGo! teaches kanji, vocabulary, and readings through a structured 100-level progression system where items unlock based on mastery — not just time spent.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**WaniKani's brain + my own personality + extensibility for any language.**
+
+---
+
+## Features
+
+- **SRS Engine** — Custom spaced repetition with 10-stage flower lifecycle (Seed → Sprout → Bloom → Eternal)
+- **Level System** — 100 levels with dependency-based unlocking (components → characters → vocabulary)
+- **Personality Modes** — 7 companion personalities that change all feedback text (Playful, Teacher, Tsundere, Yandere, Boring, Bipolar, CrazyHana)
+- **Silent Kana Input** — Type romaji, see kana instantly. Romaji is never displayed
+- **Flower Garden Dashboard** — Your progress is a garden. Each kanji is a flower. You're the gardener
+- **Dark/Light Mode** — Deep midnight or soft blush pink
+- **User Notes** — Personal memory hooks per item, auto-saved
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router) |
+| UI | React 19 + Tailwind CSS v4 |
+| Database | Supabase PostgreSQL |
+| ORM | Prisma 7 |
+| Language | TypeScript |
+| Font | Josefin Sans |
+
+## Architecture
+
+```
+src/engine/     — Pure TypeScript SRS engine (no framework deps, portable)
+src/app/api/    — Next.js API routes (thin wrappers around engine)
+src/app/        — Pages (dashboard, lessons, reviews, settings)
+src/components/ — Shared UI components
+src/lib/        — Utilities (prisma client, kana converter, encouragement)
+prisma/         — Database schema + seed data
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The SRS engine is framework-agnostic by design — it can run client-side in the browser, server-side in Node, or be extracted into a separate package for mobile apps.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Development
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+npx prisma db seed
+```
 
-## Learn More
+## Roadmap
 
-To learn more about Next.js, take a look at the following resources:
+- [x] Core SRS engine with configurable intervals
+- [x] Level & dependency system (100 levels)
+- [x] API routes with parallel query optimization
+- [x] Lesson system with gallery multi-select + diligent mode
+- [x] Review system with instant grading + keyboard shortcuts
+- [x] 7 personality modes with full dialogue sets
+- [x] Dashboard with flower garden visualization
+- [ ] Seed data expansion (KANJIDIC, JMdict, Tatoeba pipelines)
+- [ ] Welcome page + onboarding flow
+- [ ] Review summary + streak tracking
+- [ ] Audio pronunciation
+- [ ] Multi-language support (Mandarin, Hebrew, Spanish)
+- [ ] Mobile responsive / PWA
+- [ ] Deploy to production
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
+© 2026 GenGo!
+Cultivated with care by [i-Gits](https://github.com/i-Gits) 🌱
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Product Architect · System Designer · Creative Director
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All rights reserved.
+This repository is provided for viewing and portfolio purposes only.
+The code may not be copied, modified, redistributed, or used
+commercially without explicit written permission.

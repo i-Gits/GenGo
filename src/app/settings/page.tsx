@@ -31,7 +31,7 @@ const MODES = [
   { value: "yandere",   label: "Yandere",              emoji: "🔪", desc: "I'll never let you forget~" },
   { value: "boring",    label: "Boring & Straight",    emoji: "📋", desc: "Just the facts." },
   { value: "bipolar",   label: "Bipolar",              emoji: "🎭", desc: "Wildly switches between modes" },
-  { value: "crazydave", label: "CrazyDave",            emoji: "🤪", desc: "WABBY WABBO?!" },
+  { value: "crazyhana", label: "CrazyHana",             emoji: "🤪", desc: "WABBY WABBO?!" },
 ];
 
 // ── Honorifics ────────────────────────────────────────────────

@@ -303,8 +303,8 @@ model ItemReading {
 //   - A meaning mnemonic ("how to remember what it means")
 //   - A reading mnemonic ("how to remember how to say it")
 //
-// AI drafts these, arc reviews and edits them. Written in
-// GenGo!'s voice -- cute, garden-coded, occasionally chaotic.
+// Hand-crafted in GenGo!'s voice -- cute, garden-coded,
+// occasionally chaotic. Each one reviewed for quality.
 
 model ItemMnemonic {
   id           String @id @default(cuid())
@@ -381,7 +381,7 @@ model UserPreference {
   userId            String @unique
   honorific         String @default("勇者")    // 王女, 王子, 王, 女王, 勇者, 魔王, 旅人, 博士, 先生, or custom
   preferredName     String @default("")        // display name
-  encouragementMode String @default("playful") // "playful" | "teacher" | "tsundere" | "yandere" | "boring" | "bipolar" | "crazydave"
+  encouragementMode String @default("playful") // "playful" | "teacher" | "tsundere" | "yandere" | "boring" | "bipolar" | "crazyhana"
   theme             String @default("light")   // "light" | "dark"
   lessonBatchSize   Int    @default(5)         // 5, 10, or custom number
   dailyReviewLimit  Int    @default(100)       // max reviews per day (0 = unlimited)

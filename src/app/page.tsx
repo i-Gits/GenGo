@@ -34,7 +34,7 @@ const MODES = [
   { value: "yandere",   label: "Yandere",              desc: "I'll never let you forget~" },
   { value: "boring",    label: "Boring & Straight",    desc: "Just the facts." },
   { value: "bipolar",   label: "Bipolar",              desc: "Wildly switches between modes" },
-  { value: "crazydave", label: "CrazyDave",            desc: "WABBY WABBO?!" },
+  { value: "crazyhana", label: "CrazyHana",             desc: "WABBY WABBO?!" },
 ];
 
 export default function DashboardPage() {
@@ -217,7 +217,7 @@ export default function DashboardPage() {
             {selectedMode === "yandere" && "🔪"}
             {selectedMode === "boring" && "📋"}
             {selectedMode === "bipolar" && "🎭"}
-            {selectedMode === "crazydave" && "🤪"}
+            {selectedMode === "crazyhana" && "🤪"}
           </span>
           <span className="text-[9px] font-bold mt-0.5" style={{ color: "var(--primary-hover)" }}>
             {MODES.find((m) => m.value === selectedMode)?.label ?? ""}

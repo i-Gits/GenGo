@@ -157,7 +157,7 @@ chaotic, depending on your mode~).
 
 ### 3.3 Nice to Have (Post-V1)
 
-- [ ] AI-generated mnemonics
+- [ ] Expanded mnemonic library (community-contributed)
 - [ ] Offline mode
 - [ ] Streak / badge system
 - [ ] Performance analytics (charts, trends, heatmap)
@@ -359,13 +359,14 @@ the app. Can be changed anytime in settings.
 | 🔪 Yandere           | "Yes~ perfect~ just for me~"         | "Wrong... you're not leaving until it's right~ 🔪" |
 | 📋 Boring & Straight | "Correct."                           | "Incorrect. The answer was X."                  |
 | 🎭 Bipolar           | "AMAZING!! THE BEST ANSWER EVER!!"   | "oh. oh no. oh no no no. i cant do this."       |
-| 🤪 CrazyDave         | "WABBY WABBO!! That answer was so good my SUNFLOWERS started SINGING!" | "The zombies ATE your answer!! It's okay I have a SPARE one somewhere in my TRUNK." |
+| 🤪 CrazyHana         | "WABBY WABBO!! That answer was so good my SUNFLOWERS started SINGING!" | "The zombies ATE your answer!! It's okay I have a SPARE one somewhere in my TRUNK." |
 
-> 🌮 **CrazyDave** is inspired by Plants vs. Zombies' beloved unhinged
-> neighbor. Core traits: absolute randomness, non-sequiturs, random CAPS,
-> gardening obsession, zombie paranoia, time-traveling logic. Tacos appear
-> *occasionally* as a treat, not every line. The key is unpredictability --
-> no two CrazyDave messages should feel formulaic.
+> 🌮 **CrazyHana** is GenGo!'s chaotic garden spirit -- an unhinged flower
+> enthusiast who speaks in non-sequiturs, random CAPS, and unpredictable
+> gardening metaphors. Core traits: absolute randomness, garden obsession,
+> flower power chaos, time-traveling logic. Tacos appear *occasionally*
+> as a treat, not every line. The key is unpredictability --
+> no two CrazyHana messages should feel formulaic.
 
 ---
 
@@ -450,8 +451,8 @@ users ──< user_item_states  (SRS progress + user notes per item)
 |---|----------|--------|
 | 1 | **SRS stage theme** -- Flower lifecycle 🌱→🌸→🪻 with wilting mechanic | ✅ Resolved |
 | 2 | **Reading input** -- Silent romaji-to-kana conversion (romaji never displayed) | ✅ Resolved |
-| 3 | **CrazyDave** -- PvZ-inspired. Random, chaotic, garden-obsessed, unpredictable | ✅ Resolved |
-| 4 | **Mnemonics** -- AI drafts first pass, arc reviews and edits to taste | ✅ Resolved |
+| 3 | **CrazyHana** -- Original chaotic garden spirit. Random, unhinged, flower-obsessed, unpredictable | ✅ Resolved |
+| 4 | **Mnemonics** -- Hand-crafted in GenGo!'s voice, reviewed and edited to taste | ✅ Resolved |
 | 5 | **Honorifics** -- all presets + custom + changeable in settings | ✅ Resolved |
 
 ---
@@ -474,8 +475,8 @@ For arc's reference when writing GenGo!'s mnemonics:
 > 人 → "Two legs, walking through a moonlit garden. No hurry.
 > Just a *person*, taking their sweet time~"
 
-Mnemonics in GenGo! will be written in YOUR voice -- cute, garden-coded,
-occasionally chaotic. AI can draft them; you approve and edit.
+Mnemonics in GenGo! are written in YOUR voice -- cute, garden-coded,
+occasionally chaotic. Each one hand-crafted and reviewed for quality.
 
 ---
 

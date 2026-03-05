@@ -62,7 +62,7 @@ const CORRECT: Record<EncouragementMode, string[]> = {
     "Yes.",
   ],
   bipolar: [], // handled dynamically
-  crazydave: [
+  crazyhana: [
     "WABBY WABBO!! CORRECT!!",
     "YEEEAAAH BABY!!",
     "THE FLOWERS ARE DANCING!!",
@@ -113,7 +113,7 @@ const INCORRECT: Record<EncouragementMode, string[]> = {
     "No.",
   ],
   bipolar: [], // handled dynamically
-  crazydave: [
+  crazyhana: [
     "WRONG BUT WHO CARES!! TACOS!!",
     "NOPE! BUT THE ZOMBIES DON'T CARE!!",
     "WABBO! WRONG BUT I STILL LOVE YA!!",
@@ -151,7 +151,7 @@ const SESSION_COMPLETE: Record<EncouragementMode, string[]> = {
     "Done.",
   ],
   bipolar: [],
-  crazydave: [
+  crazyhana: [
     "SESSION OVER!! TIME FOR TACOS!!",
     "WABBY WABBO!! THAT WAS GREAT!!",
     "THE GARDEN IS PLEASED!! CRAZY PLEASED!!",
