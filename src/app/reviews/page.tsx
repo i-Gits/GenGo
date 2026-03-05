@@ -224,7 +224,11 @@ export default function ReviewsPage() {
           });
         } else if (key === "r") {
           e.preventDefault();
-          setOpenSections(new Set());
+          // Toggle: if anything is open → close all. If all closed → open ALL
+          setOpenSections((prev) => {
+            if (prev.size > 0) return new Set();
+            return new Set(["meaning", "reading", "mnemonic", "components", "related", "notes"]);
+          });
         }
       }
     }
@@ -771,9 +775,14 @@ export default function ReviewsPage() {
                 E
               </button>
               <button
-                onClick={() => setOpenSections(new Set())}
+                onClick={() =>
+                  setOpenSections((prev) => {
+                    if (prev.size > 0) return new Set();
+                    return new Set(["meaning", "reading", "mnemonic", "components", "related", "notes"]);
+                  })
+                }
                 className="px-2 py-0.5 text-xs rounded bg-muted hover:bg-border transition-all"
-                title="Collapse all (R)"
+                title="Toggle all (R)"
               >
                 R
               </button>
@@ -992,7 +1001,7 @@ export default function ReviewsPage() {
             <kbd className="px-1 py-0.5 rounded bg-muted font-mono text-xs">
               R
             </kbd>{" "}
-            collapse
+            toggle all
           </>
         )}
       </p>

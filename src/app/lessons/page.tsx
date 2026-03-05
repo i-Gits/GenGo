@@ -202,7 +202,10 @@ export default function LessonsPage() {
         });
       } else if (key === "r") {
         e.preventDefault();
-        setOpenSections(new Set());
+        setOpenSections((prev) => {
+          if (prev.size > 0) return new Set();
+          return new Set(["meaning", "reading", "mnemonic", "components", "related", "notes"]);
+        });
       } else if (key === "arrowright" || key === "arrowdown") {
         e.preventDefault();
         if (data && currentIndex < data.lessons.filter((l) => selectedIds.has(l.id)).length - 1) {
@@ -475,9 +478,14 @@ export default function LessonsPage() {
             E
           </button>
           <button
-            onClick={() => setOpenSections(new Set())}
+            onClick={() =>
+              setOpenSections((prev) => {
+                if (prev.size > 0) return new Set();
+                return new Set(["meaning", "reading", "mnemonic", "components", "related", "notes"]);
+              })
+            }
             className="px-2 py-0.5 text-xs rounded bg-muted hover:bg-border transition-all"
-            title="Collapse all (R)"
+            title="Toggle all (R)"
           >
             R
           </button>
@@ -638,7 +646,7 @@ export default function LessonsPage() {
         {" · "}
         <kbd className="px-1 py-0.5 rounded bg-muted font-mono text-xs">E</kbd> expand all
         {" · "}
-        <kbd className="px-1 py-0.5 rounded bg-muted font-mono text-xs">R</kbd> collapse
+        <kbd className="px-1 py-0.5 rounded bg-muted font-mono text-xs">R</kbd> toggle all
       </p>
     </div>
   );

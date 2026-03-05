@@ -47,6 +47,29 @@ const HONORIFICS = [
   { value: "先生", label: "先生 (Teacher)" },
 ];
 
+// ── Reset confirmation stages ────────────────────────────────
+const RESET_STAGES = [
+  {
+    message: "Are you sure?",
+    description: "This will delete ALL your learning progress, review history, and notes. Your settings will be kept.",
+    buttonLabel: "Yes, reset my progress",
+    buttonStyle: "border-destructive text-destructive hover:bg-destructive/10",
+  },
+  {
+    message: "Are you ABSOLUTELY SURE?",
+    description: "Every flower you've grown, every review you've done... gone. There's no undo button.",
+    buttonLabel: "Yes, I'm sure!",
+    buttonStyle: "bg-destructive/10 border-destructive text-destructive hover:bg-destructive/20",
+  },
+  {
+    message: "Okay if you say so... you just have to click it one last time...",
+    description: "Last chance. Your entire garden will be burned to the ground.",
+    yesLabel: "Yes",
+    noLabel: "No",
+    buttonStyle: "bg-destructive border-destructive text-white hover:bg-destructive/90",
+  },
+];
+
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const [data, setData] = useState<UserData | null>(null);
@@ -60,6 +83,11 @@ export default function SettingsPage() {
   const [encouragementMode, setEncouragementMode] = useState("playful");
   const [lessonBatchSize, setLessonBatchSize] = useState(5);
   const [dailyReviewLimit, setDailyReviewLimit] = useState(100);
+
+  // ── Reset state ─────────────────────────────────────────────
+  const [resetStage, setResetStage] = useState(-1); // -1 = hidden, 0/1/2 = confirmation stages
+  const [resetting, setResetting] = useState(false);
+  const [resetDone, setResetDone] = useState(false);
 
   // ── Fetch user data ─────────────────────────────────────────
   useEffect(() => {
@@ -106,6 +134,25 @@ export default function SettingsPage() {
     }
 
     setSaving(false);
+  }
+
+  // ── Reset progress ────────────────────────────────────────────
+  async function handleReset() {
+    setResetting(true);
+    try {
+      const res = await fetch("/api/user/reset", { method: "DELETE" });
+      if (res.ok) {
+        setResetDone(true);
+        setResetStage(-1);
+        // Redirect to dashboard after a moment
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
+      }
+    } catch {
+      setResetStage(-1);
+    }
+    setResetting(false);
   }
 
   if (loading) {
@@ -293,6 +340,82 @@ export default function SettingsPage() {
           </span>
         )}
       </div>
+
+      {/* ── Danger Zone ──────────────────────────────────────── */}
+      <section className="rounded-2xl border-2 border-destructive/30 bg-card p-6 space-y-4">
+        <h2 className="text-lg font-semibold text-destructive">Danger Zone 🔥</h2>
+
+        {resetDone ? (
+          <div className="text-center py-4 space-y-2">
+            <span className="text-4xl">🌱</span>
+            <p className="text-sm font-medium">Garden cleared. A fresh start awaits...</p>
+            <p className="text-xs text-muted-foreground">Redirecting to your garden...</p>
+          </div>
+        ) : resetStage === -1 ? (
+          /* Initial state — just the reset button */
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">Reset All Progress</p>
+              <p className="text-xs text-muted-foreground">
+                Delete all SRS progress, review history, and notes. Settings are kept.
+              </p>
+            </div>
+            <button
+              onClick={() => setResetStage(0)}
+              className="px-4 py-2 text-sm rounded-xl border-2 border-destructive/40 text-destructive hover:bg-destructive/5 transition-all"
+            >
+              Reset
+            </button>
+          </div>
+        ) : (
+          /* Confirmation flow — 3 stages */
+          <div className="space-y-4 text-center py-2">
+            <div className="space-y-2">
+              <p className="text-lg font-bold text-destructive">
+                {RESET_STAGES[resetStage].message}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {RESET_STAGES[resetStage].description}
+              </p>
+            </div>
+
+            {resetStage < 2 ? (
+              /* Stages 0 and 1: single confirm button + cancel */
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  onClick={() => setResetStage(-1)}
+                  className="px-4 py-2 text-sm rounded-xl border-2 border-border hover:bg-muted transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => setResetStage(resetStage + 1)}
+                  className={`px-4 py-2 text-sm rounded-xl border-2 transition-all ${RESET_STAGES[resetStage].buttonStyle}`}
+                >
+                  {RESET_STAGES[resetStage].buttonLabel}
+                </button>
+              </div>
+            ) : (
+              /* Stage 2: Yes / No final choice */
+              <div className="flex items-center justify-center gap-3">
+                <button
+                  onClick={handleReset}
+                  disabled={resetting}
+                  className={`px-6 py-2 text-sm rounded-xl border-2 transition-all disabled:opacity-50 ${RESET_STAGES[2].buttonStyle}`}
+                >
+                  {resetting ? "Resetting..." : "Yes"}
+                </button>
+                <button
+                  onClick={() => setResetStage(-1)}
+                  className="px-6 py-2 text-sm rounded-xl border-2 border-secondary text-secondary hover:bg-secondary/10 transition-all font-medium"
+                >
+                  No
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
