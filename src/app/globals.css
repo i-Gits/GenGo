@@ -1,26 +1,116 @@
 @import "tailwindcss";
 
+/* ╭───────────────────────────────· · ୨୧ · · ─────────────────╮
+     GenGo! Global Styles
+     "the garden's color palette" 🎨
+   ╰───────────────────────────────· · ୨୧ · · ─────────────────╯ */
+
+/* ── LIGHT MODE (default) ──────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fef7f0;
+  --foreground: #2d1b0e;
+  --card: #ffffff;
+  --card-foreground: #2d1b0e;
+  --primary: #e8a0bf;
+  --primary-hover: #d4789e;
+  --primary-foreground: #ffffff;
+  --secondary: #a8d8b9;
+  --secondary-hover: #6db585;
+  --accent: #f9d784;
+  --accent-hover: #f0c85a;
+  --muted: #f5ede4;
+  --muted-foreground: #8b7355;
+  --destructive: #e57373;
+  --border: #e8ddd0;
+  --ring: #e8a0bf;
+  --nav-bg: rgba(255, 255, 255, 0.8);
+}
+
+/* ── DARK MODE ─────────────────────────────────────────────── */
+/* Both selectors for maximum compatibility */
+[data-theme="dark"],
+html.dark {
+  --background: #1a1218;
+  --foreground: #f0e6df;
+  --card: #251c22;
+  --card-foreground: #f0e6df;
+  --primary: #d4789e;
+  --primary-hover: #e8a0bf;
+  --primary-foreground: #1a1218;
+  --secondary: #6db585;
+  --secondary-hover: #a8d8b9;
+  --accent: #f0c85a;
+  --accent-hover: #f9d784;
+  --muted: #2d2228;
+  --muted-foreground: #a89480;
+  --destructive: #e57373;
+  --border: #3d2e35;
+  --ring: #d4789e;
+  --nav-bg: rgba(26, 18, 24, 0.85);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-nav-bg: var(--nav-bg);
+  --font-sans: "Josefin Sans", sans-serif;
+  --font-mono: "Courier", "Courier New", monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Smooth transitions for interactive elements */
+button, a, input, select {
+  transition: all 0.2s ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--muted); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); }
+
+/* Japanese text sizes */
+.jp-text { font-size: 1.5em; line-height: 1.4; }
+.jp-text-lg { font-size: 2.5em; line-height: 1.2; }
+.jp-text-xl { font-size: 4em; line-height: 1.1; }
+
+/* Animations */
+@keyframes softPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+@keyframes burnGlow {
+  0%, 100% { filter: brightness(1) drop-shadow(0 0 8px rgba(180, 130, 255, 0.4)); }
+  50% { filter: brightness(1.1) drop-shadow(0 0 16px rgba(180, 130, 255, 0.7)); }
+}
+@keyframes correctFlash {
+  0% { background-color: rgba(168, 216, 185, 0); }
+  30% { background-color: rgba(168, 216, 185, 0.3); }
+  100% { background-color: rgba(168, 216, 185, 0); }
+}
+@keyframes incorrectFlash {
+  0% { background-color: rgba(229, 115, 115, 0); }
+  30% { background-color: rgba(229, 115, 115, 0.3); }
+  100% { background-color: rgba(229, 115, 115, 0); }
+}
+.animate-soft-pulse { animation: softPulse 2s ease-in-out infinite; }
+.animate-burn-glow { animation: burnGlow 3s ease-in-out infinite; }
+.animate-correct { animation: correctFlash 0.8s ease-out; }
+.animate-incorrect { animation: incorrectFlash 0.8s ease-out; }

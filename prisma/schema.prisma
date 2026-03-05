@@ -1,0 +1,288 @@
+// ╭───────────────────────────────· · ୨୧ · · ─────────────────╮
+//   GenGo! Database Schema (Prisma)
+//   "every garden needs good soil" -- the data layer 🌱
+// ╰───────────────────────────────· · ୨୧ · · ─────────────────╯
+
+// ── What is this file? ──────────────────────────────────────
+// This is the Prisma schema -- it defines every table (model)
+// in our PostgreSQL database. When you change something here
+// and run `npx prisma migrate dev`, Prisma auto-generates the
+// SQL to update your database. No manual SQL needed!
+//
+// 🧠 Java analogy: Each "model" below is like a Java Entity
+//    class with @Table and @Column annotations (like in JPA/Hibernate).
+//    Prisma just uses a simpler syntax.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // URL is configured in prisma.config.ts (Prisma 7+ style)
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CONTENT LAYER -- what the user learns
+// ═══════════════════════════════════════════════════════════════
+
+// ── LANGUAGES ───────────────────────────────────────────────
+// The extensibility foundation. Japanese now, Mandarin next~
+// The engine reads from this table -- it NEVER hardcodes "ja".
+//
+// 🧠 Think of it like Java generics: the engine works with
+//    Language<T>, not Language<Japanese> specifically.
+
+model Language {
+  id                String      @id @default(cuid())
+  code              String      @unique          // "ja", "zh", "he", "es"
+  displayName       String                       // "日本語", "中文"
+  writingSystemType String                       // "logographic", "syllabary", "alphabetic", "abjad"
+  createdAt         DateTime    @default(now())
+
+  items             Item[]
+  srsConfigs        SrsConfig[]
+
+  @@map("languages")
+}
+
+// ── ITEMS ───────────────────────────────────────────────────
+// The core content unit. Everything you learn is an "item."
+//
+// type field uses the "discriminator pattern":
+//   "component"  = radical (亻)
+//   "character"  = kanji (人)
+//   "vocabulary" = word (人口)
+//   "phrase"     = sentence (V2, future)
+//   "grammar"    = pattern (V2, future)
+//
+// 🧠 Java analogy: Item is the abstract superclass. Component,
+//    Character, Vocabulary are like subclasses -- but instead of
+//    inheritance we use a "type" string field. This is called
+//    "single table inheritance" and it's very common in web apps.
+
+model Item {
+  id               String      @id @default(cuid())
+  languageId       String
+  type             String                        // "component" | "character" | "vocabulary"
+  level            Int                           // 1-100
+  primaryDisplay   String                        // "人", "人口", "亻"
+  difficultyWeight Float       @default(1.0)     // harder items = more reviews
+  jlptLevel        String?                       // "N5" | "N4" | "N3" | "N2" | "N1" | null
+  createdAt        DateTime    @default(now())
+
+  language         Language         @relation(fields: [languageId], references: [id])
+  meanings         ItemMeaning[]
+  readings         ItemReading[]
+  mnemonics        ItemMnemonic[]
+  dependsOn        Dependency[]     @relation("item_depends")
+  requiredBy       Dependency[]     @relation("item_required_by")
+  userStates       UserItemState[]
+  reviewLogs       ReviewLog[]
+
+  @@index([languageId, level])
+  @@index([languageId, type, level])
+  @@map("items")
+}
+
+// ── ITEM MEANINGS ───────────────────────────────────────────
+// One item can have multiple English meanings.
+// Example: 人 → "person" (primary), "human", "people"
+//
+// isPrimary = the "main" answer used for grading.
+// Other meanings are accepted as correct too, but primary
+// is what we show as THE answer.
+
+model ItemMeaning {
+  id        String  @id @default(cuid())
+  itemId    String
+  meaning   String                               // "person", "human"
+  isPrimary Boolean @default(false)
+
+  item      Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@map("item_meanings")
+}
+
+// ── ITEM READINGS ───────────────────────────────────────────
+// Pronunciations in NATIVE SCRIPT only.
+//
+// 🚫 NO ROMAJI. EVER. This is law.
+//    Readings are stored as: じん, ひと, ピンイン
+//    NEVER as: jin, hito, pinyin
+//
+// readingType varies per language:
+//   Japanese: "onyomi" | "kunyomi"
+//   Chinese:  "pinyin" (with tones, stored in native)
+//   Hebrew:   "transliteration"
+
+model ItemReading {
+  id          String  @id @default(cuid())
+  itemId      String
+  reading     String                             // "じん", "ひと" -- NATIVE SCRIPT ONLY
+  readingType String                             // "onyomi" | "kunyomi" | etc.
+  isPrimary   Boolean @default(false)
+
+  item        Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@map("item_readings")
+}
+
+// ── ITEM MNEMONICS ──────────────────────────────────────────
+// Memory aids. Each item can have a meaning mnemonic and a
+// reading mnemonic. Written in GenGo!'s voice:
+// cute, garden-coded, occasionally chaotic~
+//
+// AI drafts them, arc reviews and edits.
+
+model ItemMnemonic {
+  id           String @id @default(cuid())
+  itemId       String
+  mnemonicType String                            // "meaning" | "reading"
+  text         String                            // the actual story/hint
+
+  item         Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@map("item_mnemonics")
+}
+
+// ── DEPENDENCIES ────────────────────────────────────────────
+// Prerequisite relationships between items.
+// "You must guru 亻(radical) before 人(kanji) unlocks"
+// "You must guru 人(kanji) before 人口(vocab) unlocks"
+//
+// 🧠 Java analogy: This is a Directed Acyclic Graph (DAG),
+//    same concept as Maven dependency trees. No circular deps!
+
+model Dependency {
+  id              String @id @default(cuid())
+  itemId          String                         // the item that HAS prerequisites
+  dependsOnItemId String                         // the item it REQUIRES
+
+  item            Item   @relation("item_depends", fields: [itemId], references: [id], onDelete: Cascade)
+  dependsOnItem   Item   @relation("item_required_by", fields: [dependsOnItemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, dependsOnItemId])
+  @@map("dependencies")
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CONFIG LAYER -- how the engine behaves
+// ═══════════════════════════════════════════════════════════════
+
+// ── SRS CONFIG ──────────────────────────────────────────────
+// Interval timings per stage, configurable per language.
+// Japanese might use different pacing than Spanish.
+// This is what makes the engine truly language-agnostic.
+
+model SrsConfig {
+  id             String   @id @default(cuid())
+  languageId     String
+  stage          Int                             // 0-9
+  intervalHours  Int                             // hours until next review
+  penaltyStages  Int      @default(2)            // stages dropped on wrong answer
+
+  language       Language @relation(fields: [languageId], references: [id])
+
+  @@unique([languageId, stage])
+  @@map("srs_configs")
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  USER LAYER -- personal progress and preferences
+// ═══════════════════════════════════════════════════════════════
+
+// ── USERS ───────────────────────────────────────────────────
+// Linked to Supabase Auth. We store the auth UID here and
+// connect all progress data to it.
+
+model User {
+  id        String   @id                         // Supabase Auth UID
+  email     String?  @unique
+  createdAt DateTime @default(now())
+
+  preferences UserPreference?
+  itemStates  UserItemState[]
+  reviewLogs  ReviewLog[]
+
+  @@map("users")
+}
+
+// ── USER PREFERENCES ────────────────────────────────────────
+// Personal settings. One-to-one with User.
+//
+// honorific: 王女, 王子, 王, 女王, 勇者, 魔王, 旅人, 博士, 先生, or custom
+// encouragementMode: the companion personality for reviews
+// All changeable anytime in Settings ✨
+
+model UserPreference {
+  id                String @id @default(cuid())
+  userId            String @unique
+  honorific         String @default("勇者")      // title/honorific
+  preferredName     String @default("")           // display name
+  encouragementMode String @default("playful")    // "playful"|"teacher"|"tsundere"|"yandere"|"boring"|"bipolar"|"crazydave"
+  theme             String @default("light")      // "light" | "dark"
+  lessonBatchSize   Int    @default(5)            // 5, 10, or custom
+  dailyReviewLimit  Int    @default(100)          // max reviews/day (0 = unlimited)
+
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+// ── USER ITEM STATE ─────────────────────────────────────────
+// The HEART of SRS tracking. One row per user per item.
+// This is where your flower lives and grows~ 🌱→🌸→🪻
+//
+// 🧠 Java analogy: If Item is the class DEFINITION,
+//    UserItemState is an INSTANCE -- the specific state of
+//    that item for one specific user. Like:
+//    Item is the blueprint, UserItemState is the actual flower.
+
+model UserItemState {
+  id             String    @id @default(cuid())
+  userId         String
+  itemId         String
+  srsStage       Int       @default(0)           // 0-9 (engine # → UI shows flower name)
+  correctStreak  Int       @default(0)           // consecutive correct answers
+  incorrectCount Int       @default(0)           // total wrong answers (lifetime)
+  nextReviewAt   DateTime?                       // null = not yet in review cycle
+  unlockedAt     DateTime  @default(now())       // when this item became available
+  burnedAt       DateTime?                       // null unless stage 9 (eternal/pressed)
+  userNote       String?                         // personal notes: "reminds me of..."
+
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item           Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])                     // one flower per user per item
+  @@index([userId, nextReviewAt])                // fast: "what needs watering?"
+  @@index([userId, srsStage])                    // fast: "count flowers per stage"
+  @@map("user_item_states")
+}
+
+// ── REVIEW LOGS ─────────────────────────────────────────────
+// Every single answer, forever. Append-only (we only INSERT,
+// never UPDATE or DELETE). It's your study diary~ 📖
+//
+// Used for: accuracy stats, session summaries, analytics,
+// and future adaptive algorithm improvements.
+
+model ReviewLog {
+  id             String   @id @default(cuid())
+  userId         String
+  itemId         String
+  result         String                          // "correct" | "incorrect"
+  questionType   String                          // "meaning" | "reading"
+  previousStage  Int                             // stage BEFORE this answer
+  newStage       Int                             // stage AFTER this answer
+  responseTimeMs Int?                            // how long you took (ms)
+  reviewedAt     DateTime @default(now())
+
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item           Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([userId, reviewedAt])                  // fast: recent history
+  @@index([userId, itemId])                      // fast: all reviews for one item
+  @@map("review_logs")
+}
