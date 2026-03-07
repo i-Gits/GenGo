@@ -1,51 +1,69 @@
 // ╭───────────────────────────────· · ୨୧ · · ─────────────────╮
-//   Dev User Helper
-//   "a placeholder gardener until auth grows" 🌱
+//   User Helper -- Cookie-Based Anonymous Users
+//   "every visitor gets their own garden" 🌱
 // ╰───────────────────────────────· · ୨୧ · · ─────────────────╯
 
-// ── Why does this exist? ──────────────────────────────────────
-// We don't have Supabase Auth wired up yet (that's Phase 12).
-// But our API routes need a user ID to read/write data.
+// ── How it works ─────────────────────────────────────────────
 //
-// OPTIMIZED: We cache the user creation so we don't hit the DB
-// on every single API call. First call creates the user, then
-// all subsequent calls just return the cached ID instantly.
+// 1. Middleware (src/middleware.ts) sets a "gengo-uid" cookie
+//    on every visitor's first request.
+// 2. This function reads that cookie to identify the user.
+// 3. On first API call, it creates a User + UserPreference row.
+// 4. All subsequent calls just return the cookie-based ID.
+//
+// 🧠 Java analogy: HttpSession.getId() -- each browser session
+//    gets a unique ID without requiring login.
+//
+// ── When real auth comes (Phase 12) ─────────────────────────
+// Replace this with Supabase Auth. Optionally let users
+// "claim" their anonymous progress by linking it to a real account.
 
+import { cookies } from "next/headers";
 import { prisma } from "./prisma";
 
-const DEV_USER_ID = "dev-user-arc";
-
 // ── In-memory cache ───────────────────────────────────────────
-// Once the dev user is created, we skip the DB entirely.
-// This makes API calls MUCH faster after the first one.
-let userEnsured = false;
+// Track which user IDs we've already confirmed exist in the DB.
+// This prevents redundant upserts on every API call.
+// Keyed by user ID → true if confirmed.
+const ensuredUsers = new Set<string>();
 
 export async function getDevUser() {
-  // Already confirmed the user exists? Skip DB!
-  if (userEnsured) {
-    return { id: DEV_USER_ID };
+  // Read the anonymous user cookie
+  const cookieStore = await cookies();
+  const uid = cookieStore.get("gengo-uid")?.value;
+
+  if (!uid) {
+    // Fallback for edge cases (shouldn't happen if middleware is running)
+    throw new Error("No gengo-uid cookie found. Middleware may not be running.");
   }
 
-  // First call: create the user + preferences if needed
+  // Already confirmed this user exists? Skip DB!
+  if (ensuredUsers.has(uid)) {
+    return { id: uid };
+  }
+
+  // First API call for this user: create User + Preferences if needed
   await prisma.user.upsert({
-    where: { id: DEV_USER_ID },
+    where: { id: uid },
     update: {},
     create: {
-      id: DEV_USER_ID,
-      email: "dev@gengo.garden",
+      id: uid,
+      email: `${uid.slice(0, 8)}@anon.gengo.garden`,
     },
   });
 
   await prisma.userPreference.upsert({
-    where: { userId: DEV_USER_ID },
+    where: { userId: uid },
     update: {},
-    create: { userId: DEV_USER_ID },
+    create: { userId: uid },
   });
 
-  userEnsured = true;
-  return { id: DEV_USER_ID };
+  ensuredUsers.add(uid);
+  return { id: uid };
 }
 
 export function getDevUserId(): string {
-  return DEV_USER_ID;
+  // This synchronous version can't read cookies.
+  // Use getDevUser() instead for all new code.
+  throw new Error("Use getDevUser() instead -- it reads the cookie.");
 }
